@@ -3,35 +3,38 @@
 #include <cmath>
 int main() {
 	int const N_MAX = 1000;
-	int n, t = -1, nomer = -1;
-	double a[N_MAX];
-	double min_mod, sum = 0, lower_lim, upper_lim, for_transfer, p;
+	int n, nomer = -1, j = -1;
+	double* a;
+	double max_mod, sum = 0, lower_lim, upper_lim, for_transfer, p, neg_el = 1;
 	int ran_or_not;
 	std::cout << "Enter the number of elements in the array not exceeding 1000 \n";
 	std::cout << "----------> ";
-	std::cin >> n; 
+	std::cin >> n;
 	if (!(std::cin) || (n <= 0) || (n > 1000))
 	{
 		std::cout << "You're a STUPID person. they asked for a NON-NEGATIVE integer not exceeding 1000, and WHAT DID YOU ENTER!? ERROR!!! BEGIN AGAIN!";
 		return 0;
 	}
-	std::cout << "Enter the array randomly? ( 1 - true; 0 - false )\n"; 
+	a = new double[n + 1];
+	std::cout << "Enter the array randomly? ( 1 - true; 0 - false )\n";
 	std::cout << "----------> ";
 	std::cin >> ran_or_not;
-	if (!(std::cin) || (!(ran_or_not == 1)&&!(ran_or_not == 0)))
+	if (!(std::cin) || (!(ran_or_not == 1) && !(ran_or_not == 0)))
 	{
 		std::cout << "ONLY 1 OR 0! BEGIN AGAIN! ";
+		delete[] a;
 		return 0;
 	}
-	if (ran_or_not == 0) 
+	if (ran_or_not == 0)
 	{
 		for (int i = 0; i < n; i++)
 		{
 			std::cout << "enter " << i + 1 << " element of array ";
-			std::cin >> a[i]; 
+			std::cin >> a[i];
 			if (!(std::cin))
 			{
 				std::cout << "You're a STUPID person. they asked for a integer, and WHAT DID YOU ENTER!? ERROR!!! BEGIN AGAIN!";
+				delete[] a;
 				return 0;
 			}
 		}
@@ -45,7 +48,8 @@ int main() {
 		if (!(std::cin))
 		{
 			std::cout << "You're a STUPID person. they asked for a integer, and WHAT DID YOU ENTER!? ERROR!!! BEGIN AGAIN!";
-				return 0;
+			delete[] a;
+			return 0;
 		}
 		if (lower_lim > upper_lim)
 		{
@@ -61,71 +65,78 @@ int main() {
 		}
 	}
 	std::cout << "array:\n";
-	min_mod = std::fabs(a[0]);
+	max_mod = std::fabs(a[0]);
 	bool more_then_one = false;
 	for (int i = 1; i < n; i++)
 	{
-		if (min_mod == std::fabs(a[i]))
+		if (max_mod == std::fabs(a[i]))
 		{
 			more_then_one = true;
-			nomer = i + 1;
 		}
-		if (min_mod >= std::fabs(a[i]))
+		if (max_mod < std::fabs(a[i]))
 		{
-			min_mod = std::fabs(a[i]);
+			max_mod = std::fabs(a[i]);
+			nomer = i + 1;
 		}
 	}
 	for (int i = 0; i < n; i++)
 	{
 		std::cout << a[i] << "   ";
 	}
-	std::cout << "\n" << "minimal in absolute value: " << min_mod ;
+	std::cout << "\n" << "max in absolute value: " << max_mod;
 	if (more_then_one == true)
 	{
-		std::cout << "\nmax nomer: " << nomer;
+		std::cout << "\nmin nomer: " << nomer;
 
 	}
-
+	if (a[0] > 0)
+	{
+		std::cout << "\nIn this array the first number is positive, it is impossible to calculate the sum";
+	}
+	else
+	{
+		sum = a[0];
+		for (int i = 1; i < n; i++)
+		{
+			if (a[i] > 0)
+			{
+				break;
+			}
+			sum = sum + a[i];
+		}
+		std::cout << "\nsum = " << sum;
+	}
 	for (int i = 0; i < n; i++)
 	{
 		if (a[i] < 0)
 		{
-			t = i + 1;
-			break;
+			neg_el = a[i];
+			j = i;
 		}
 	}
-	if (t > -1)
+	if (neg_el == 1)
 	{
-		for (; t < n; t++)
-		{
-			sum = sum + a[t];
-		}
-		std::cout << "\nsum = " << sum;
+		std::cout << "\nThere is no negative element for add p. end of program.";
 	}
 	else
 	{
-		std::cout << "\nThere are no negative elements in the array, it is impossible to calculate the sum";
-	}
-
-	std::cout << "\nEnter the numbers you want to delete: "; 
-	std::cin >> p;
-	if (!(std::cin))
-	{
-		std::cout << "You're a STUPID person. they asked for a integer, and WHAT DID YOU ENTER!? ERROR!!! BEGIN AGAIN!";
-		return 0;
-	}
-	int k = 0; 
-	for (int i = 0; i < n; i++) {
-		if (std::fabs (a[i] - p) > 0.00001) {
-			a[k] = a[i];
-			k++;
+		std::cout << "\nEnter the numbers you want to add: ";
+		std::cin >> p;
+		if (!(std::cin))
+		{
+			std::cout << "You're a STUPID person. they asked for a integer, and WHAT DID YOU ENTER!? ERROR!!! BEGIN AGAIN!";
+			delete[] a;
+			return 0;
 		}
+		for (int j_end = n; j_end != j; --j_end)
+		{
+			a[j_end] = a[j_end - 1];
+		}
+		a[j + 1] = p;
+		std::cout << "final array: ";
+		for (int i = 0; i < n + 1; i++)
+			std::cout << a[i] << "   ";
 	}
-	for (int i = k; i < n; i++) {
-		a[i] = 0;
-	}
-	std::cout << "final array: ";
-	for (int i = 0; i < n; i++)
-		std::cout << a[i] << " ";
+	delete[] a;
 	return 0;
 }
